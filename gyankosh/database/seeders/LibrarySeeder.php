@@ -49,7 +49,7 @@ class LibrarySeeder extends Seeder
         ];
 
         foreach ($authors as $authorData) {
-            Author::firstOrCreate(['name' => $authorData['name']], ['bio' => $authorData['bio']]);
+            Author::firstOrCreate(['name' => $authorData['name']], ['biography' => $authorData['bio']]);
         }
 
         // Create Publishers
@@ -72,16 +72,16 @@ class LibrarySeeder extends Seeder
 
         // Create Categories
         $categories = [
-            ['name' => 'Computer Science', 'description' => 'Computing and Programming'],
-            ['name' => 'Physics', 'description' => 'Physical Sciences'],
-            ['name' => 'Mathematics', 'description' => 'Mathematical Sciences'],
-            ['name' => 'Engineering', 'description' => 'Engineering Disciplines'],
-            ['name' => 'Management', 'description' => 'Business and Management'],
-            ['name' => 'Literature', 'description' => 'Language and Literature'],
-            ['name' => 'Social Sciences', 'description' => 'Social Studies'],
-            ['name' => 'Research Papers', 'description' => 'Academic Research'],
-            ['name' => 'Thesis', 'description' => 'Dissertations and Thesis'],
-            ['name' => 'Journals', 'description' => 'Academic Journals'],
+            ['name' => 'Computer Science', 'code' => 'CS', 'description' => 'Computing and Programming'],
+            ['name' => 'Physics', 'code' => 'PHY', 'description' => 'Physical Sciences'],
+            ['name' => 'Mathematics', 'code' => 'MATH', 'description' => 'Mathematical Sciences'],
+            ['name' => 'Engineering', 'code' => 'ENG', 'description' => 'Engineering Disciplines'],
+            ['name' => 'Management', 'code' => 'MGT', 'description' => 'Business and Management'],
+            ['name' => 'Literature', 'code' => 'LIT', 'description' => 'Language and Literature'],
+            ['name' => 'Social Sciences', 'code' => 'SOC', 'description' => 'Social Studies'],
+            ['name' => 'Research Papers', 'code' => 'RES', 'description' => 'Academic Research'],
+            ['name' => 'Thesis', 'code' => 'THESIS', 'description' => 'Dissertations and Thesis'],
+            ['name' => 'Journals', 'code' => 'JRN', 'description' => 'Academic Journals'],
         ];
 
         foreach ($categories as $catData) {
@@ -90,29 +90,30 @@ class LibrarySeeder extends Seeder
 
         // Create Subjects
         $subjects = [
-            ['name' => 'Data Structures', 'category_name' => 'Computer Science'],
-            ['name' => 'Algorithms', 'category_name' => 'Computer Science'],
-            ['name' => 'Operating Systems', 'category_name' => 'Computer Science'],
-            ['name' => 'Database Management', 'category_name' => 'Computer Science'],
-            ['name' => 'Computer Networks', 'category_name' => 'Computer Science'],
-            ['name' => 'Software Engineering', 'category_name' => 'Computer Science'],
-            ['name' => 'Artificial Intelligence', 'category_name' => 'Computer Science'],
-            ['name' => 'Machine Learning', 'category_name' => 'Computer Science'],
-            ['name' => 'Web Development', 'category_name' => 'Computer Science'],
-            ['name' => 'Object Oriented Programming', 'category_name' => 'Computer Science'],
-            ['name' => 'Classical Mechanics', 'category_name' => 'Physics'],
-            ['name' => 'Quantum Physics', 'category_name' => 'Physics'],
-            ['name' => 'Electromagnetism', 'category_name' => 'Physics'],
-            ['name' => 'Calculus', 'category_name' => 'Mathematics'],
-            ['name' => 'Linear Algebra', 'category_name' => 'Mathematics'],
-            ['name' => 'Statistics', 'category_name' => 'Mathematics'],
+            ['name' => 'Data Structures', 'code' => 'DS', 'category_name' => 'Computer Science'],
+            ['name' => 'Algorithms', 'code' => 'ALG', 'category_name' => 'Computer Science'],
+            ['name' => 'Operating Systems', 'code' => 'OS', 'category_name' => 'Computer Science'],
+            ['name' => 'Database Management', 'code' => 'DBM', 'category_name' => 'Computer Science'],
+            ['name' => 'Computer Networks', 'code' => 'CN', 'category_name' => 'Computer Science'],
+            ['name' => 'Software Engineering', 'code' => 'SE', 'category_name' => 'Computer Science'],
+            ['name' => 'Artificial Intelligence', 'code' => 'AI', 'category_name' => 'Computer Science'],
+            ['name' => 'Machine Learning', 'code' => 'ML', 'category_name' => 'Computer Science'],
+            ['name' => 'Web Development', 'code' => 'WEB', 'category_name' => 'Computer Science'],
+            ['name' => 'Object Oriented Programming', 'code' => 'OOP', 'category_name' => 'Computer Science'],
+            ['name' => 'Classical Mechanics', 'code' => 'CM', 'category_name' => 'Physics'],
+            ['name' => 'Quantum Physics', 'code' => 'QP', 'category_name' => 'Physics'],
+            ['name' => 'Electromagnetism', 'code' => 'EM', 'category_name' => 'Physics'],
+            ['name' => 'Calculus', 'code' => 'CALC', 'category_name' => 'Mathematics'],
+            ['name' => 'Linear Algebra', 'code' => 'LA', 'category_name' => 'Mathematics'],
+            ['name' => 'Statistics', 'code' => 'STAT', 'category_name' => 'Mathematics'],
         ];
 
         foreach ($subjects as $subjData) {
             $category = Category::where('name', $subjData['category_name'])->first();
             Subject::firstOrCreate([
                 'name' => $subjData['name'],
-                'category_id' => $category->id,
+                'code' => $subjData['code'],
+                'category_id' => $category ? $category->id : null,
             ]);
         }
 
@@ -309,39 +310,52 @@ class LibrarySeeder extends Seeder
         }
 
         // Create Digital Resources
+        // First, create resource categories for digital resources
+        $resourceCategories = [
+            ['name' => 'Computer Science', 'code' => 'CS-RES', 'description' => 'Computing and Programming Resources'],
+            ['name' => 'Physics', 'code' => 'PHY-RES', 'description' => 'Physics Resources'],
+            ['name' => 'Mathematics', 'code' => 'MATH-RES', 'description' => 'Mathematics Resources'],
+            ['name' => 'Engineering', 'code' => 'ENG-RES', 'description' => 'Engineering Resources'],
+            ['name' => 'Management', 'code' => 'MGT-RES', 'description' => 'Business and Management Resources'],
+        ];
+
+        foreach ($resourceCategories as $catData) {
+            ResourceCategory::firstOrCreate($catData);
+        }
+
         $digitalResources = [
             [
                 'title' => 'Introduction to Machine Learning',
                 'description' => 'Comprehensive lecture notes on ML fundamentals',
-                'resource_type' => 'lecture_notes',
+                'resource_type' => 'lecture-notes',
                 'category_name' => 'Computer Science',
                 'department_name' => 'Computer Science',
             ],
             [
                 'title' => 'Database Normalization Techniques',
                 'description' => 'Research paper on advanced normalization',
-                'resource_type' => 'research_paper',
+                'resource_type' => 'research-paper',
                 'category_name' => 'Computer Science',
                 'department_name' => 'Computer Science',
             ],
             [
                 'title' => 'Quantum Computing Basics',
                 'description' => 'E-book on quantum computing fundamentals',
-                'resource_type' => 'e_book',
+                'resource_type' => 'e-book',
                 'category_name' => 'Physics',
                 'department_name' => 'Physics',
             ],
             [
                 'title' => 'Previous Year Question Papers - BCA',
                 'description' => 'Collection of past exam papers',
-                'resource_type' => 'question_paper',
+                'resource_type' => 'question-papers',
                 'category_name' => 'Computer Science',
                 'department_name' => 'Computer Science',
             ],
             [
                 'title' => 'Software Engineering Best Practices',
                 'description' => 'Presentation on modern SE practices',
-                'resource_type' => 'presentation',
+                'resource_type' => 'presentations',
                 'category_name' => 'Computer Science',
                 'department_name' => 'Computer Science',
             ],
@@ -350,7 +364,7 @@ class LibrarySeeder extends Seeder
         $users = User::whereHas('role', fn($q) => $q->where('name', 'staff'))->get();
         
         foreach ($digitalResources as $resData) {
-            $category = Category::where('name', $resData['category_name'])->first();
+            $category = ResourceCategory::where('name', $resData['category_name'])->first();
             $department = \App\Models\Department::where('name', $resData['department_name'])->first();
             $contributor = $users->random();
 
@@ -359,8 +373,8 @@ class LibrarySeeder extends Seeder
                 'description' => $resData['description'],
                 'author' => $contributor->name,
                 'contributor_id' => $contributor->id,
-                'category_id' => $category->id,
-                'department_id' => $department->id,
+                'category_id' => $category ? $category->id : 1,
+                'department_id' => $department ? $department->id : null,
                 'resource_type' => $resData['resource_type'],
                 'access_level' => 'public',
                 'download_permission' => true,
@@ -379,18 +393,22 @@ class LibrarySeeder extends Seeder
             if ($book->available_copies > 0) {
                 $dueDate = Carbon::now()->addDays(14);
                 
-                $borrowing = Borrowing::create([
-                    'user_id' => $student->id,
-                    'book_copy_id' => $book->copies()->where('status', 'available')->first()->id,
-                    'issue_date' => Carbon::now(),
-                    'due_date' => $dueDate,
-                    'status' => 'borrowed',
-                    'issued_by' => User::whereHas('role', fn($q) => $q->where('name', 'librarian'))->first()->id,
-                ]);
+                $bookCopy = $book->copies()->where('status', 'available')->first();
+                
+                if ($bookCopy) {
+                    $borrowing = Borrowing::create([
+                        'user_id' => $student->id,
+                        'book_copy_id' => $bookCopy->id,
+                        'issue_date' => Carbon::now(),
+                        'due_date' => $dueDate,
+                        'status' => 'issued',
+                        'issued_by' => User::whereHas('role', fn($q) => $q->where('name', 'librarian'))->first()->id,
+                    ]);
 
-                // Update book copy and book availability
-                $borrowing->bookCopy->update(['status' => 'borrowed']);
-                $book->decrement('available_copies');
+                    // Update book copy and book availability
+                    $bookCopy->update(['status' => 'issued']);
+                    $book->decrement('available_copies');
+                }
             }
         }
 

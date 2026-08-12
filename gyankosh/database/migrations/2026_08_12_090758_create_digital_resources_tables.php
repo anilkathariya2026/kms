@@ -45,7 +45,7 @@ return new class extends Migration
                 'lecture-notes', 'course-materials', 'question-papers',
                 'assignments', 'presentations', 'articles',
                 'institutional-documents', 'videos', 'external-links'
-            ]);
+            ])->default('lecture-notes');
             $table->string('file_path')->nullable();
             $table->string('file_name')->nullable();
             $table->string('file_mime_type')->nullable();

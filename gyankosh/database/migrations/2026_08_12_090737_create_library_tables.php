@@ -52,6 +52,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('code')->unique();
             $table->text('description')->nullable();
+            $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -88,7 +89,7 @@ return new class extends Migration
             $table->integer('copy_number');
             $table->string('shelf')->nullable();
             $table->string('rack')->nullable();
-            $table->enum('status', ['available', 'borrowed', 'reserved', 'lost', 'damaged', 'maintenance'])->default('available');
+            $table->enum('status', ['available', 'borrowed', 'reserved', 'lost', 'damaged', 'maintenance', 'issued'])->default('available');
             $table->timestamps();
 
             $table->index(['book_id', 'status']);
