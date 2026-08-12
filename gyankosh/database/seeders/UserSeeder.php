@@ -140,6 +140,7 @@ class UserSeeder extends Seeder
         for ($i = 1; $i <= 20; $i++) {
             $progId = $studentPrograms[array_rand($studentPrograms)];
             $program = Program::find($progId);
+            $department = $program ? $program->department : null;
             
             User::firstOrCreate(
                 ['email' => "student{$i}@gyankosh.edu"],
@@ -148,8 +149,8 @@ class UserSeeder extends Seeder
                     'password' => Hash::make('password123'),
                     'phone' => '+91-' . rand(9000000000, 9999999999),
                     'role_id' => $studentRole->id,
-                    'faculty_id' => $program->department->faculty_id,
-                    'department_id' => $program->department_id,
+                    'faculty_id' => $department ? $department->faculty_id : null,
+                    'department_id' => $department ? $department->id : null,
                     'program_id' => $progId,
                     'status' => 'active',
                     'email_verified_at' => now(),

@@ -87,7 +87,7 @@ class AcademicSeeder extends Seeder
             $startYear = $currentYear + $i;
             $endYear = $startYear + 1;
             AcademicYear::firstOrCreate(
-                ['name' => "{$startYear}-{$endYear}"],
+                ['year' => "{$startYear}-{$endYear}"],
                 [
                     'start_date' => "$startYear-07-01",
                     'end_date' => "$endYear-06-30",
@@ -106,8 +106,7 @@ class AcademicSeeder extends Seeder
                     'semester_number' => $i,
                 ], [
                     'name' => "Semester {$i}",
-                    'start_date' => now(),
-                    'end_date' => now()->addMonths(6),
+                    'is_active' => true,
                 ]);
             }
         }
